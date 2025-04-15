@@ -1,143 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AstracatGen v1</title>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRACAT WARP - Quantum Config Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/@animxyz/core@0.6.0/dist/animxyz.min.css" rel="stylesheet">
     <style>
-      #loading-spinner {
-        display: none;
-      }
-      .progress-bar {
-        height: 4px;
-        background: linear-gradient(to right, #6366f1, #9333ea);
-        animation: loading 2s linear infinite;
-      }
-      @keyframes loading {
-        0% { width: 0%; }
-        50% { width: 50%; }
-        100% { width: 100%; }
-      }
+        :root {
+            --space-black: #0a0c17;
+            --quantum-blue: #4b79ff;
+            --neon-purple: #9d4dff;
+            --cyber-green: #00ff88;
+            --matrix-font: 'Courier New', monospace;
+        }
+
+        body {
+            background: var(--space-black);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cyber-border {
+            position: relative;
+            background: linear-gradient(45deg, 
+                var(--quantum-blue) 0%, 
+                var(--neon-purple) 100%);
+            padding: 3px;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(77, 117, 255, 0.3);
+        }
+
+        .cyber-container {
+            background: rgba(10, 12, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        .cyber-title {
+            font-family: var(--matrix-font);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(45deg, #4b79ff, #9d4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(77, 117, 255, 0.5);
+        }
+
+        .cyber-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(77, 117, 255, 0.3);
+            color: white !important;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--quantum-blue);
+            box-shadow: 0 0 15px rgba(77, 117, 255, 0.2);
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #4b79ff, #9d4dff);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(77, 117, 255, 0.4);
+        }
+
+        .hologram-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hologram-effect::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 25%,
+                rgba(77, 117, 255, 0.1) 50%,
+                transparent 75%
+            );
+            animation: hologram 4s infinite linear;
+        }
+
+        @keyframes hologram {
+            0% { transform: rotate(0deg) translate(-50%, -50%); }
+            100% { transform: rotate(360deg) translate(-50%, -50%); }
+        }
+
+        .config-output {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(77, 117, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--matrix-font);
+            position: relative;
+        }
+
+        .cyber-logo {
+            width: 80px;
+            filter: drop-shadow(0 0 15px rgba(77, 117, 255, 0.5));
+        }
     </style>
-  </head>
-  <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-4 font-mono">
-    <div class="w-full max-w-2xl bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8">
-      <div class="flex justify-center mb-4">
-        <h1 class="text-4xl font-extrabold text-indigo-400 tracking-wide flex items-center gap-2">
-          🐱 AstracatGen <span class="text-sm text-gray-500">v1</span>
-        </h1>
-      </div>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzRiNzlmZiIvPjxwYXRoIGQ9Ik0yNSw3NSBMMzUsNjUgTDUwLDgwIEw2NSw2NSBMNzUsNzUgTDUwLDEwMCBaIiBmaWxsPSIjZmZmIi8+PC9zdmc+" 
+                 class="cyber-logo mb-3" 
+                 alt="ASTRACAT Logo">
+            <h1 class="cyber-title display-4 mb-3">ASTRACAT WARP</h1>
+            <p class="text-muted">Quantum-Secured Connection Protocol</p>
+        </div>
 
-      <div class="cf-turnstile mb-5" data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"></div>
+        <div class="cyber-border hologram-effect">
+            <div class="cyber-container">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="d-block mb-3">🛡️ Private Key</label>
+                        <input type="text" 
+                               class="cyber-input w-100" 
+                               id="privateKey"
+                               placeholder="sPV3bYEtzZZe6Xa5Rc0kJLon6ZDSK/XnwGeBOJw71m8=">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="d-block mb-3">🔑 Public Key</label>
+                        <input type="text" 
+                               class="cyber-input w-100" 
+                               id="publicKey"
+                               placeholder="bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=">
+                    </div>
+                </div>
 
-      <label class="block text-sm mb-1 text-gray-400">Выбор модели:</label>
-      <select id="model-select" class="w-full p-2 mb-4 rounded-md bg-zinc-800 text-white border border-zinc-700">
-        <option value="Xenova/gpt2">GPT2 (117M)</option>
-        <option value="Xenova/distil-gpt2">Distil-GPT2 (меньше и быстрее)</option>
-      </select>
+                <div class="mt-4">
+                    <button class="generate-btn w-100" onclick="generateConfig()">
+                        🚀 GENERATE QUANTUM CONFIG
+                    </button>
+                </div>
+            </div>
+        </div>
 
-      <label class="block text-sm mb-1 text-gray-400">Вопрос:</label>
-      <input
-        type="text"
-        id="user-input"
-        placeholder="Спрашивай всё по веб-кодингу..."
-        class="w-full p-4 rounded-md bg-zinc-800 text-white mb-4 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-      />
-      <button
-        id="send-button"
-        class="w-full bg-indigo-700 hover:bg-indigo-800 active:bg-indigo-900 transition-all text-white py-3 rounded-md font-bold tracking-wide"
-        disabled
-      >
-        Ответить
-      </button>
-      <div id="loading-spinner" class="mt-4 text-center text-sm text-gray-400">Загрузка модели AstracatGen...</div>
-      <div id="progress-bar" class="progress-bar mt-2 rounded-lg hidden"></div>
-      <pre id="response" class="mt-6 whitespace-pre-wrap bg-zinc-950 p-4 rounded-lg text-green-400 font-mono border border-zinc-800"></pre>
+        <div class="cyber-border mt-4">
+            <div class="cyber-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="cyber-title">⚡ ASTRACATWARP.CONFIG</h5>
+                    <button class="generate-btn btn-sm" onclick="downloadConfig()">
+                        💾 DOWNLOAD .CONF
+                    </button>
+                </div>
+                <pre id="configOutput" class="config-output"></pre>
+            </div>
+        </div>
     </div>
-    <footer class="mt-6 text-gray-600 text-sm text-center">
-      AstracatGen v1 • GPT2 в браузере без API • Сделано с ♥️ и брутальностью
-    </footer>
 
     <script>
-      let pipeline;
+        function generateConfig() {
+            const configData = {
+                privateKey: document.getElementById('privateKey').value,
+                publicKey: document.getElementById('publicKey').value,
+                timestamp: new Date().toISOString()
+            };
 
-      const loadModel = async (modelName) => {
-        const spinner = document.getElementById("loading-spinner");
-        const button = document.getElementById("send-button");
-        const output = document.getElementById("response");
-        const progressBar = document.getElementById("progress-bar");
+            const config = `[Interface]
+PrivateKey = ${configData.privateKey}
+S1 = 0
+S2 = 0
+Jc = 4
+Jmin = 40
+Jmax = 70
+H1 = 1
+H2 = 2
+H3 = 3
+H4 = 4
+MTU = 1280
+Address = 172.16.0.2, 2606:4700:110:890c:2443:42d4:bc95:1e9d
+DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
-        spinner.textContent = `Загрузка модели ${modelName}...`;
-        spinner.style.display = "block";
-        progressBar.classList.remove("hidden");
-        button.disabled = true;
-        output.textContent = "";
+[Peer]
+PublicKey = ${configData.publicKey}
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = quantum.astracatwarp.com:2408
+# Generated by ASTRACAT WARP ${configData.timestamp}`;
 
-        try {
-          const env = window.transformers.env;
-          env.allowLocalModels = false;
-          env.allowRemoteModels = true;
-          env.backends.onnx.wasm.numThreads = 1;
-
-          pipeline = await window.transformers.pipeline("text-generation", modelName);
-
-          spinner.style.display = "none";
-          progressBar.classList.add("hidden");
-          button.disabled = false;
-        } catch (err) {
-          spinner.textContent = `❌ Ошибка загрузки модели: ${err.message}`;
-          progressBar.classList.add("hidden");
-          console.error(err);
-
-          // fallback на distil-gpt2
-          if (modelName !== "Xenova/distil-gpt2") {
-            spinner.textContent += "\n⏳ Пробуем загрузить резервную модель Distil-GPT2...";
-            await loadModel("Xenova/distil-gpt2");
-            document.getElementById("model-select").value = "Xenova/distil-gpt2";
-          }
+            document.getElementById('configOutput').textContent = config;
         }
-      };
 
-      const initializeApp = async () => {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.4.1/dist/transformers.min.js";
+        function downloadConfig() {
+            const text = document.getElementById('configOutput').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'astracatwarp.conf';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
 
-        script.onload = async () => {
-          try {
-            const modelSelect = document.getElementById("model-select");
-            await loadModel(modelSelect.value);
+        // Auto-generate placeholder keys
+        window.onload = function() {
+            document.getElementById('privateKey').placeholder = generateRandomKey();
+            document.getElementById('publicKey').placeholder = generateRandomKey();
+        }
 
-            modelSelect.addEventListener("change", async () => {
-              await loadModel(modelSelect.value);
-            });
-
-            const button = document.getElementById("send-button");
-            const input = document.getElementById("user-input");
-            const output = document.getElementById("response");
-
-            button.addEventListener("click", async () => {
-              output.textContent = "AstracatGen думает...";
-              const text = input.value;
-              const result = await pipeline(text, { max_new_tokens: 50 });
-              output.textContent = result[0].generated_text;
-            });
-          } catch (err) {
-            console.error("Ошибка инициализации приложения:", err);
-            document.getElementById("loading-spinner").textContent = "Ошибка инициализации модели.";
-          }
-        };
-
-        script.onerror = () => {
-          document.getElementById("loading-spinner").textContent = "Ошибка подключения к AstracatGen.";
-        };
-
-        document.body.appendChild(script);
-      };
-
-      window.onload = initializeApp;
+        function generateRandomKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+            return Array.from({length: 44}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        }
     </script>
-  </body>
+</body>
 </html>
-
