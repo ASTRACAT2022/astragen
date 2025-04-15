@@ -10,13 +10,26 @@
       #loading-spinner {
         display: none;
       }
+      .progress-bar {
+        height: 4px;
+        background: linear-gradient(to right, #6366f1, #9333ea);
+        animation: loading 2s linear infinite;
+      }
+      @keyframes loading {
+        0% { width: 0%; }
+        50% { width: 50%; }
+        100% { width: 100%; }
+      }
     </style>
   </head>
   <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-4 font-mono">
     <div class="w-full max-w-2xl bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8">
-      <h1 class="text-4xl font-extrabold mb-6 text-center text-indigo-400 tracking-wide">
-        🚀 AstracatGen <span class="text-sm text-gray-500">v1</span>
-      </h1>
+      <div class="flex justify-center mb-4">
+        <h1 class="text-4xl font-extrabold text-indigo-400 tracking-wide flex items-center gap-2">
+          🐱 AstracatGen <span class="text-sm text-gray-500">v1</span>
+        </h1>
+      </div>
+
       <div class="cf-turnstile mb-5" data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"></div>
 
       <label class="block text-sm mb-1 text-gray-400">Выбор модели:</label>
@@ -40,10 +53,11 @@
         Ответить
       </button>
       <div id="loading-spinner" class="mt-4 text-center text-sm text-gray-400">Загрузка модели AstracatGen...</div>
+      <div id="progress-bar" class="progress-bar mt-2 rounded-lg hidden"></div>
       <pre id="response" class="mt-6 whitespace-pre-wrap bg-zinc-950 p-4 rounded-lg text-green-400 font-mono border border-zinc-800"></pre>
     </div>
     <footer class="mt-6 text-gray-600 text-sm text-center">
-      AstracatGen v1 • GPT2 в браузере без API • Сделано с ♥️
+      AstracatGen v1 • GPT2 в браузере без API • Сделано с ♥️ и брутальностью
     </footer>
 
     <script>
@@ -53,9 +67,11 @@
         const spinner = document.getElementById("loading-spinner");
         const button = document.getElementById("send-button");
         const output = document.getElementById("response");
+        const progressBar = document.getElementById("progress-bar");
 
         spinner.textContent = `Загрузка модели ${modelName}...`;
         spinner.style.display = "block";
+        progressBar.classList.remove("hidden");
         button.disabled = true;
         output.textContent = "";
 
@@ -68,9 +84,11 @@
           pipeline = await window.transformers.pipeline("text-generation", modelName);
 
           spinner.style.display = "none";
+          progressBar.classList.add("hidden");
           button.disabled = false;
         } catch (err) {
           spinner.textContent = `❌ Ошибка загрузки модели: ${err.message}`;
+          progressBar.classList.add("hidden");
           console.error(err);
 
           // fallback на distil-gpt2
