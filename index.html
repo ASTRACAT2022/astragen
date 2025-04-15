@@ -22,7 +22,6 @@
       <label class="block text-sm mb-1 text-gray-400">Выбор модели:</label>
       <select id="model-select" class="w-full p-2 mb-4 rounded-md bg-zinc-800 text-white border border-zinc-700">
         <option value="Xenova/gpt2">GPT2 (117M)</option>
-        <option value="Xenova/gpt2-medium">GPT2-Medium (345M)</option>
         <option value="Xenova/distil-gpt2">Distil-GPT2 (меньше и быстрее)</option>
       </select>
 
@@ -73,6 +72,13 @@
         } catch (err) {
           spinner.textContent = `❌ Ошибка загрузки модели: ${err.message}`;
           console.error(err);
+
+          // fallback на distil-gpt2
+          if (modelName !== "Xenova/distil-gpt2") {
+            spinner.textContent += "\n⏳ Пробуем загрузить резервную модель Distil-GPT2...";
+            await loadModel("Xenova/distil-gpt2");
+            document.getElementById("model-select").value = "Xenova/distil-gpt2";
+          }
         }
       };
 
