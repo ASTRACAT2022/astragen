@@ -2,75 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ASTRACAT WARP QUANTUM</title>
+    <title>ASTRACAT WARP QUANTUM v5.0</title>
     <style>
         :root {
-            --matrix-green: #00ff88;
-            --cyber-blue: #4b79ff;
-            --neon-purple: #9d4dff;
-            --hacker-bg: #0a0c17;
-            --scanline: rgba(0, 255, 136, 0.05);
+            --neon-cyan: #0ff;
+            --neon-purple: #bc13fe;
+            --dark-bg: #0a0a12;
+            --glass-bg: rgba(15, 15, 25, 0.4);
+            --glitch-offset: 2px;
+        }
+
+        @font-face {
+            font-family: 'Cyber';
+            src: url('https://fonts.gstatic.com/s/russoone/v14/Z9XUDmZRWg6M1LvRYsHOz8mM.ttf') format('truetype');
         }
 
         body {
-            background: var(--hacker-bg);
-            color: var(--matrix-green);
-            font-family: 'Courier New', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-cyan);
+            font-family: 'Cyber', sans-serif;
             min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
         }
 
-        .cyber-container {
-            max-width: 800px;
-            margin: 2rem auto;
+        .cyber-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 32px rgba(11, 221, 255, 0.1);
             padding: 2rem;
-            border: 3px solid var(--cyber-blue);
-            border-radius: 10px;
             position: relative;
-            background: 
-                linear-gradient(45deg, rgba(75,121,255,0.1) 0%, rgba(157,77,255,0.1) 100%),
-                radial-gradient(circle, transparent 60%, rgba(0,255,136,0.05) 100%);
+            margin: 2rem auto;
+            max-width: 800px;
+            overflow: hidden;
         }
 
-        .cyber-container::before {
+        .cyber-glass::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                var(--cyber-blue), 
-                var(--neon-purple),
-                var(--matrix-green));
-            z-index: -1;
-            animation: border-glow 3s linear infinite;
-            border-radius: 12px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 48%,
+                rgba(188, 19, 254, 0.1) 50%,
+                transparent 52%
+            );
+            animation: glitch 2s infinite linear;
         }
 
-        @keyframes border-glow {
-            0% { opacity: 0.5; filter: hue-rotate(0deg); }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; filter: hue-rotate(360deg); }
+        @keyframes glitch {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(var(--glitch-offset)); }
+            40% { transform: translateX(calc(-1 * var(--glitch-offset))); }
+            60% { transform: translateY(var(--glitch-offset)); }
+            80% { transform: translateY(calc(-1 * var(--glitch-offset))); }
+            100% { transform: translate(0); }
+        }
+
+        .hologram-text {
+            text-shadow: 0 0 12px var(--neon-cyan);
+            position: relative;
+            animation: text-flicker 3s infinite;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        @keyframes text-flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.3; }
         }
 
         .server-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin: 2rem 0;
         }
 
         .server-node {
-            padding: 1rem;
-            border: 1px solid var(--matrix-green);
-            border-radius: 5px;
+            background: rgba(10, 10, 30, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(11, 221, 255, 0.2);
             position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
         }
 
-        .server-node::after {
+        .server-node:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(11, 221, 255, 0.2);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, 
+                var(--neon-purple) 0%, 
+                var(--neon-cyan) 100%);
+            border: none;
+            padding: 1.2rem 2.4rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            font-size: 1.1em;
+        }
+
+        .generate-btn::after {
             content: '';
             position: absolute;
             top: -50%;
@@ -78,67 +125,56 @@
             width: 200%;
             height: 200%;
             background: linear-gradient(
-                to right,
+                45deg,
                 transparent 45%,
-                var(--scanline) 50%,
+                rgba(255,255,255,0.1) 50%,
                 transparent 55%
             );
-            animation: scanline 3s infinite linear;
+            animation: btn-scan 3s infinite linear;
         }
 
-        @keyframes scanline {
-            0% { transform: translate(-50%, -50%) rotate(10deg); }
-            100% { transform: translate(-50%, 150%) rotate(10deg); }
+        @keyframes btn-scan {
+            0% { transform: translate(-50%, -50%) rotate(45deg); }
+            100% { transform: translate(150%, 150%) rotate(45deg); }
         }
 
         .config-output {
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.6);
             padding: 2rem;
-            border-radius: 5px;
+            border-radius: 12px;
+            border: 1px solid rgba(11, 221, 255, 0.2);
             white-space: pre-wrap;
             position: relative;
             margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
         }
 
-        .generate-btn {
-            background: linear-gradient(45deg, 
-                var(--cyber-blue), 
-                var(--neon-purple));
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: all 0.3s;
-            display: block;
-            width: 100%;
+        .cyber-loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--neon-cyan);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
         }
 
-        .generate-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px rgba(75,121,255,0.5);
-        }
-
-        h1 {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 15px rgba(0,255,136,0.5);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="cyber-container">
-        <h1>🛸 ASTRACAT WARP 2.0</h1>
+    <div class="cyber-glass">
+        <h1 class="hologram-text">ASTRACAT WARP NEON</h1>
         
-        <div class="server-grid" id="serverList"></div>
+        <div class="server-grid" id="serverGrid"></div>
 
         <div class="config-output" id="configOutput"></div>
         <button class="generate-btn" onclick="generateNewConfig()">
-            🌌 GENERATE QUANTUM TUNNEL
+            <span class="cyber-loader"></span>
+            GENERATE QUANTUM CONFIG
         </button>
     </div>
 
@@ -158,126 +194,114 @@
             '162.159.195.107:4500'
         ];
 
-        // Инициализация списка серверов
-        function initServerList() {
-            const container = document.getElementById('serverList');
+        function initServerGrid() {
+            const container = document.getElementById('serverGrid');
             container.innerHTML = endpoints.map(ep => `
                 <div class="server-node">
-                    🛰️ ${ep.split(':')[0]}
-                    <div style="color: var(--neon-purple); font-size: 0.8em;">
-                        PORT: ${ep.split(':')[1]}
-                    </div>
+                    <div style="color: var(--neon-cyan);">🛰️ ${ep.split(':')[0]}</div>
+                    <div style="color: var(--neon-purple); font-size: 0.9em;">PORT ${ep.split(':')[1]}</div>
                 </div>
             `).join('');
         }
 
-        // Генерация ключей
-        async function generateKeyPair() {
+        async function generateQuantumKeys() {
             try {
-                const keyPair = await window.crypto.subtle.generateKey(
-                    { name: "ECDH", namedCurve: "P-256" },
+                const keyPair = await crypto.subtle.generateKey(
+                    { name: "ECDH", namedCurve: "P-384" },
                     true,
                     ["deriveKey"]
                 );
                 
-                const privateKey = await window.crypto.subtle.exportKey(
-                    "pkcs8",
-                    keyPair.privateKey
-                );
-                
-                const publicKey = await window.crypto.subtle.exportKey(
-                    "spki",
-                    keyPair.publicKey
-                );
+                const [privateKey, publicKey] = await Promise.all([
+                    crypto.subtle.exportKey("pkcs8", keyPair.privateKey),
+                    crypto.subtle.exportKey("spki", keyPair.publicKey)
+                ]);
 
                 return {
                     privateKey: arrayToBase64(privateKey),
                     publicKey: arrayToBase64(publicKey)
                 };
             } catch (error) {
-                console.error('Key generation error:', error);
+                console.error('Quantum Key Failure:', error);
                 return null;
             }
         }
 
-        function arrayToBase64(array) {
-            return btoa(String.fromCharCode(...new Uint8Array(array)))
+        function arrayToBase64(arrayBuffer) {
+            return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
                 .replace(/=/g, '')
                 .replace(/\+/g, '-')
                 .replace(/\//g, '_');
         }
 
-        // Генерация случайных параметров
-        function generateIPv4() {
-            return `172.16.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        function generateNetworkParams() {
+            return {
+                ipv4: `172.16.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
+                ipv6: `2606:4700:110:${Array.from({length:4}, 
+                    () => Math.floor(Math.random()*65535).toString(16).padStart(4, '0')).join(':')}`,
+                clientId: Array.from({length:32}, 
+                    () => Math.floor(Math.random()*16).toString(16)).join(''),
+                country: ['US','DE','JP','SG','NL','CH'][Math.floor(Math.random()*6)],
+                endpoint: endpoints[Math.floor(Math.random()*endpoints.length)]
+            };
         }
 
-        function generateIPv6() {
-            const hexSegment = () => Math.floor(Math.random() * 65535).toString(16).padStart(4, '0');
-            return `2606:4700:110:${hexSegment()}:${hexSegment()}:${hexSegment()}:${hexSegment()}`;
-        }
-
-        function generateClientId() {
-            return Array.from({length: 32}, () => 
-                Math.floor(Math.random() * 16).toString(16)).join('');
-        }
-
-        // Основная функция генерации
-        async function generateFullConfig() {
+        async function generateAstraConfig() {
             try {
-                const keys = await generateKeyPair();
-                if (!keys) throw new Error('Key generation failed');
+                const keys = await generateQuantumKeys();
+                if (!keys) throw new Error('Quantum Key Collapse');
                 
-                const randomEndpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-                const timestamp = new Date().toLocaleString();
-                
+                const {ipv4, ipv6, clientId, country, endpoint} = generateNetworkParams();
+                const timestamp = new Date().toISOString();
+
                 return `[Interface]
 PrivateKey = ${keys.privateKey}
-Address = ${generateIPv4()}/32
-Address = ${generateIPv6()}/128
+Address = ${ipv4}/32
+Address = ${ipv6}/128
 DNS = 1.1.1.1, 1.0.0.1
 MTU = 1280
 
 [Peer]
 PublicKey = ${keys.publicKey}
 AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = ${randomEndpoint}
-ClientId = ${generateClientId()}
-Country = ${['US','DE','JP','SG'][Math.floor(Math.random()*4)]}
+Endpoint = ${endpoint}
+ClientId = ${clientId}
+Country = ${country}
 
-# Quantum Tunnel ID: ${Math.random().toString(36).slice(2,9).toUpperCase()}
-# Established: ${timestamp}
-# Protocol: WireGuard-QKD-256`;
+# Quantum Signature: ASTRA-${btoa(timestamp).slice(0,12)}
+# Generated: ${new Date().toLocaleString()}
+# Protocol: WireGuard-ASTRA-QKD-384`;
             } catch (error) {
-                return '⚠️ QUANTUM TUNNEL COLLAPSE: TRY AGAIN';
+                return '⚠️ QUANTUM ANOMALY DETECTED - RETRY';
             }
         }
 
-        // Обновление интерфейса
-        async function updateConfigDisplay() {
+        async function updateInterface() {
             const output = document.getElementById('configOutput');
-            output.textContent = '🌀 INITIALIZING QUANTUM ENTANGLEMENT...';
+            const btnLoader = document.querySelector('.cyber-loader');
             
             try {
-                const config = await generateFullConfig();
-                output.textContent = config;
+                btnLoader.style.display = 'inline-block';
+                output.textContent = '🌀 ENTANGLING QUANTUM STATES...';
                 
-                // Автоматическое копирование
+                const config = await generateAstraConfig();
+                output.textContent = config;
                 await navigator.clipboard.writeText(config);
-                output.textContent += '\n\n✅ CONFIG COPIED TO HOLO-MEMORY';
+                output.textContent += '\n\n✅ CONFIG STORED IN QUANTUM MEMORY';
             } catch (error) {
-                output.textContent = '❌ QUANTUM FLUCTUATION DETECTED';
+                output.textContent = '❌ CRITICAL QUANTUM FAILURE';
+            } finally {
+                btnLoader.style.display = 'none';
             }
         }
 
-        function generateNewConfig() {
-            updateConfigDisplay();
-        }
+        window.onload = () => {
+            initServerGrid();
+            updateInterface();
+        };
 
-        // Инициализация при загрузке
-        window.onload = function() {
-            initServerList();
-            updateConfigDisplay();
+        function generateNewConfig() {
+            updateInterface();
         }
     </script>
 </body>
