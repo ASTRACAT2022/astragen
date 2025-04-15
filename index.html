@@ -61,11 +61,17 @@
         output.textContent = "";
 
         try {
+          const env = window.transformers.env;
+          env.allowLocalModels = false;
+          env.allowRemoteModels = true;
+          env.backends.onnx.wasm.numThreads = 1;
+
           pipeline = await window.transformers.pipeline("text-generation", modelName);
+
           spinner.style.display = "none";
           button.disabled = false;
         } catch (err) {
-          spinner.textContent = `Ошибка загрузки модели ${modelName}`;
+          spinner.textContent = `❌ Ошибка загрузки модели: ${err.message}`;
           console.error(err);
         }
       };
