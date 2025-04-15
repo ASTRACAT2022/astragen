@@ -3,299 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstraConfig Pro</title>
+    <title>AstraConfig DevTools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.css">
     <style>
         :root {
-            --bg: #0D0D0D;
-            --surface: #1A1A1A;
-            --primary: #3B82F6;
-            --text: #EDEDED;
-            --glitch: #F97316;
-            --success: #10B981;
+            --bg: #0d1117;
+            --surface: #161b22;
+            --primary: #58a6ff;
+            --text: #c9d1d9;
+            --success: #238636;
+            --error: #da3633;
         }
 
-        @keyframes text-glitch {
-            0% { text-shadow: none; }
-            2% { text-shadow: 2px 0 var(--glitch); }
-            4% { text-shadow: -2px 0 var(--glitch); }
-            96% { text-shadow: none; }
-            98% { text-shadow: 2px 0 var(--glitch); }
-            100% { text-shadow: -2px 0 var(--glitch); }
+        .dev-tools-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            height: 100vh;
         }
 
-        @keyframes container-glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .header:hover::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, 
-                transparent 49%,
-                var(--glitch) 50%,
-                transparent 51%
-            );
-            animation: text-glitch 1s infinite;
-        }
-
-        .generator-card {
+        .toolbar {
             background: var(--surface);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-right: 1px solid #30363d;
+        }
+
+        .debug-console {
+            background: #0a0d10;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .config-editor {
             position: relative;
-            overflow: hidden;
-            transition: transform 0.2s;
+            height: calc(100vh - 120px);
         }
 
-        .generator-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .generator-card::before {
-            content: '';
+        .editor-actions {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 45%,
-                rgba(249, 115, 22, 0.1) 50%,
-                transparent 55%
-            );
-            animation: container-glitch 3s infinite linear;
-        }
-
-        .button-group {
+            top: 10px;
+            right: 10px;
+            z-index: 100;
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            gap: 8px;
         }
 
-        .generate-btn {
-            background: linear-gradient(135deg, 
-                var(--primary) 0%, 
-                #2563EB 100%
-            );
-            border: none;
-            padding: 1rem 2rem;
+        .qrcode-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
             border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .download-btn {
-            background: linear-gradient(135deg, 
-                var(--success) 0%, 
-                #059669 100%
-            );
-        }
-
-        .generate-btn:hover {
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-        }
-
-        .config-output {
-            background: #252525;
-            padding: 1.5rem;
-            border-radius: 8px;
-            font-family: 'IBM Plex Mono', monospace;
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-
-        .xray-btn {
+        .endpoint-tester {
             background: var(--surface);
-            color: var(--text);
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
         }
 
-        .xray-btn:hover {
-            background: #2A2A2A;
-            transform: translateY(-2px);
-        }
-
-        .glitch-text {
-            animation: text-glitch 6s infinite;
+        .lint-error {
+            position: absolute;
+            background: var(--error);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="glitch-text">AstraConfig Pro</h1>
-            <p>Enterprise-grade WireGuard Configuration</p>
-        </div>
-
-        <div class="generator-card">
-            <div class="button-group">
-                <button class="generate-btn" onclick="generateNewConfig()">
-                    🔒 Generate Secure Config
-                </button>
-                <button class="generate-btn download-btn" onclick="downloadConfig()">
-                    ⬇️ Download Config
-                </button>
-            </div>
-            <pre class="config-output" id="configOutput"></pre>
-        </div>
-    </div>
-
-    <div class="footer">
-        <a href="https://astracat2022.github.io/info/" class="xray-btn" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-            XrayVPN Documentation
-        </a>
-    </div>
-
-    <script>
-        const endpoints = [
-            '188.114.99.235:988',
-            '188.114.96.198:878',
-            '188.114.97.135:1387',
-            '188.114.96.57:3476',
-            '188.114.98.160:8854',
-            '188.114.99.48:4177',
-            '188.114.97.230:7103',
-            '188.114.97.4:4500',
-            '162.159.195.137:1018',
-            '162.159.192.178:4500',
-            '162.159.195.159:5279',
-            '162.159.195.107:4500'
-        ];
-
-        let currentConfig = '';
-
-        async function generateKeyPair() {
-            const keyPair = await crypto.subtle.generateKey(
-                { name: "ECDH", namedCurve: "P-384" },
-                true,
-                ["deriveKey"]
-            );
+    <div class="dev-tools-container">
+        <div class="toolbar">
+            <h3>Developer Tools</h3>
             
-            const privateKey = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
-            const publicKey = await crypto.subtle.exportKey("spki", keyPair.publicKey);
+            <div class="endpoint-tester">
+                <h4>Endpoint Analyzer</h4>
+                <input type="text" id="testEndpoint" placeholder="IP:Port">
+                <button onclick="testEndpoint()">Test Connectivity</button>
+                <div id="testResult"></div>
+            </div>
 
-            return {
-                privateKey: arrayToBase64(privateKey),
-                publicKey: arrayToBase64(publicKey)
+            <div class="debug-console" id="console"></div>
+        </div>
+
+        <div class="config-editor">
+            <div class="editor-actions">
+                <button onclick="lintConfig()">Lint</button>
+                <button onclick="exportConfig()">Export</button>
+                <button onclick="importConfig()">Import</button>
+                <button onclick="generateQR()">QR Code</button>
+            </div>
+            <textarea id="configEditor" spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        let configHistory = [];
+        const MAX_HISTORY = 10;
+
+        // Редактор с подсветкой синтаксиса
+        const editor = document.getElementById('configEditor');
+        editor.addEventListener('input', debounce(liveLint, 500));
+
+        function log(message, type = 'info') {
+            const console = document.getElementById('console');
+            const entry = document.createElement('div');
+            entry.className = `log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            console.appendChild(entry);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function testEndpoint() {
+            const endpoint = document.getElementById('testEndpoint').value;
+            if(!endpoint) return;
+
+            log(`Testing endpoint: ${endpoint}`);
+            const [ip, port] = endpoint.split(':');
+            
+            // Тестирование через WebSocket как пример
+            const testSocket = new WebSocket(`wss://${ip}:${port}`);
+            const timeout = setTimeout(() => {
+                testSocket.close();
+                showResult('Connection timeout', 'error');
+            }, 3000);
+
+            testSocket.onopen = () => {
+                clearTimeout(timeout);
+                showResult('Connection successful', 'success');
+                testSocket.close();
+            };
+
+            testSocket.onerror = () => {
+                clearTimeout(timeout);
+                showResult('Connection failed', 'error');
             };
         }
 
-        function arrayToBase64(array) {
-            return btoa(String.fromCharCode(...new Uint8Array(array)))
-                .replace(/=/g, '')
-                .replace(/\+/g, '-')
-                .replace(/\//g, '_');
-        }
-
-        function randomEndpoint() {
-            return endpoints[Math.floor(Math.random() * endpoints.length)];
-        }
-
-        async function generateNewConfig() {
-            try {
-                const output = document.getElementById('configOutput');
-                output.textContent = 'Initializing quantum key exchange...';
-                
-                const keys = await generateKeyPair();
-                const endpoint = randomEndpoint();
-                
-                currentConfig = `[Interface]
-PrivateKey = ${keys.privateKey}
-Address = 172.16.0.2/32
-DNS = 1.1.1.1, 1.0.0.1
-MTU = 1280
-
-[Peer]
-PublicKey = ${keys.publicKey}
-AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = ${endpoint}
-PersistentKeepalive = 25
-# Security Protocol: ECDH-P384
-# Generated: ${new Date().toISOString()}`;
-
-                output.textContent = currentConfig;
-                await navigator.clipboard.writeText(currentConfig);
-                output.textContent += '\n\n✓ Config copied to clipboard';
-            } catch (error) {
-                output.textContent = '⚠️ Security protocol violation\nError generating configuration';
-                currentConfig = '';
-            }
-        }
-
-        function downloadConfig() {
-            if (!currentConfig) {
-                alert('Please generate a config first!');
-                return;
-            }
+        function liveLint() {
+            const config = editor.value;
+            const errors = [];
             
-            const blob = new Blob([currentConfig], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
+            // Проверка обязательных полей
+            if(!config.includes('[Interface]')) errors.push('Missing [Interface] section');
+            if(!config.includes('[Peer]')) errors.push('Missing [Peer] section');
+            if(!config.match(/PrivateKey\s*=\s*\S+/)) errors.push('Missing PrivateKey');
+            
+            displayErrors(errors);
+        }
+
+        function generateQR() {
+            const qrContainer = document.createElement('div');
+            qrContainer.className = 'qrcode-container';
+            new QRCode(qrContainer, {
+                text: editor.value,
+                width: 128,
+                height: 128
+            });
+            
+            document.body.appendChild(qrContainer);
+            setTimeout(() => qrContainer.remove(), 10000);
+        }
+
+        function exportConfig() {
+            const blob = new Blob([editor.value], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            
             a.href = url;
-            a.download = `astraconfig-${Date.now()}.conf`;
-            document.body.appendChild(a);
+            a.download = `config_${Date.now()}.wg`;
             a.click();
-            
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
         }
 
-        // Initial generation
-        generateNewConfig();
+        async function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.wg,text/plain';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = () => {
+                    editor.value = reader.result;
+                    addToHistory(reader.result);
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function addToHistory(config) {
+            configHistory.unshift(config);
+            if(configHistory.length > MAX_HISTORY) configHistory.pop();
+        }
+
+        function debounce(func, timeout = 300){
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), timeout);
+            };
+        }
     </script>
 </body>
 </html>
