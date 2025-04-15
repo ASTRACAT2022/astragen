@@ -105,23 +105,28 @@
         script.src = "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.4.1/dist/transformers.min.js";
 
         script.onload = async () => {
-          const modelSelect = document.getElementById("model-select");
-          await loadModel(modelSelect.value);
-
-          modelSelect.addEventListener("change", async () => {
+          try {
+            const modelSelect = document.getElementById("model-select");
             await loadModel(modelSelect.value);
-          });
 
-          const button = document.getElementById("send-button");
-          const input = document.getElementById("user-input");
-          const output = document.getElementById("response");
+            modelSelect.addEventListener("change", async () => {
+              await loadModel(modelSelect.value);
+            });
 
-          button.addEventListener("click", async () => {
-            output.textContent = "AstracatGen думает...";
-            const text = input.value;
-            const result = await pipeline(text, { max_new_tokens: 50 });
-            output.textContent = result[0].generated_text;
-          });
+            const button = document.getElementById("send-button");
+            const input = document.getElementById("user-input");
+            const output = document.getElementById("response");
+
+            button.addEventListener("click", async () => {
+              output.textContent = "AstracatGen думает...";
+              const text = input.value;
+              const result = await pipeline(text, { max_new_tokens: 50 });
+              output.textContent = result[0].generated_text;
+            });
+          } catch (err) {
+            console.error("Ошибка инициализации приложения:", err);
+            document.getElementById("loading-spinner").textContent = "Ошибка инициализации модели.";
+          }
         };
 
         script.onerror = () => {
@@ -135,3 +140,4 @@
     </script>
   </body>
 </html>
+
